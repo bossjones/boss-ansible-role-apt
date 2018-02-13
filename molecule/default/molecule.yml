@@ -5,16 +5,10 @@ dependency:
   name: gilt
 # delegate example: https://github.com/freedomofpress/securedrop/blob/30257872db2ccad24141ff24269ff2f959a519fd/molecule/builder/create.yml
 
-
-
-
-
 driver:
   name: docker
 
 
-dependency:
-  name: galaxy
 lint:
   name: yamllint
   enabled: False
