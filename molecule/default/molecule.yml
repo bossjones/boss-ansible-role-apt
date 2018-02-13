@@ -75,19 +75,46 @@ verifier:
     enabled: False
 
 
+# scenario:
+#   name: default
+#   test_sequence:
+#     - destroy
+#     - syntax
+#     - dependency
+#     - create
+#     - prepare
+#     - converge
+#     - lint
+#     - side_effect
+#     - verify
+#     - destroy
+
 scenario:
   name: default
-  test_sequence:
+  create_sequence:
+    - create
+    - prepare
+  check_sequence:
     - destroy
-    - syntax
-    - dependency
     - create
     - prepare
     - converge
+    - check
+    - destroy
+  converge_sequence:
+    - create
+    - prepare
+    - converge
+  destroy_sequence:
+    - destroy
+  test_sequence:
     - lint
+    - destroy
+    - dependency
+    - syntax
+    - create
+    - prepare
+    - converge
     - side_effect
     - verify
     - destroy
-
-
-
