@@ -137,8 +137,8 @@ start_delegated_docker:
 	--privileged=true \
 	--cap-add=SYS_ADMIN \
 	-v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-	--name boss-ansible-role-fake-trusty \
-	--hostname boss-ansible-role-fake-trusty \
+	--name boss-ansible-role-apt-trusty \
+	--hostname boss-ansible-role-apt-trusty \
 	-it $(TEST_IMAGE_NAME):latest sleep infinity & wait
 
 stop_delegated_docker:

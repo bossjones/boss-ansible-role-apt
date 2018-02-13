@@ -1,0 +1,9 @@
+// {{ ansible_managed }}
+
+// Should APT install recommended or suggested packages?
+APT::Install-Recommends "{{ boss__apt__install_recommends | bool | lower }}";
+APT::Install-Suggests "{{ boss__apt__install_suggests | bool | lower }}";
+
+// Should APT autoremove recommended or suggested packages?
+APT::AutoRemove::RecommendsImportant "{{ boss__apt__autoremove_recommends | bool | lower }}";
+APT::AutoRemove::SuggestsImportant "{{ boss__apt__autoremove_suggests | bool | lower }}";

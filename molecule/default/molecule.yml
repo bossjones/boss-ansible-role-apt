@@ -5,16 +5,10 @@ dependency:
   name: gilt
 # delegate example: https://github.com/freedomofpress/securedrop/blob/30257872db2ccad24141ff24269ff2f959a519fd/molecule/builder/create.yml
 
-
-
-
-
 driver:
   name: docker
 
 
-dependency:
-  name: galaxy
 lint:
   name: yamllint
   enabled: False
@@ -24,7 +18,7 @@ platforms:
   # source: https://github.com/solita/docker-systemd
   # source: https://github.com/solita/docker-systemd-ssh/blob/master/Dockerfile
   # start_command: docker run -d --name systemd --security-opt seccomp=unconfined --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup:ro -t solita/ubuntu-systemd
-  - name: boss-ansible-role-fake-trusty
+  - name: boss-ansible-role-apt-trusty
     image: solita/ubuntu-systemd
     image_version: latest
     privileged: True
@@ -62,6 +56,8 @@ platforms:
 
 provisioner:
   name: ansible
+  options:
+    vvv: True
 
   lint:
     name: ansible-lint
@@ -79,18 +75,46 @@ verifier:
     enabled: False
 
 
+# scenario:
+#   name: default
+#   test_sequence:
+#     - destroy
+#     - syntax
+#     - dependency
+#     - create
+#     - prepare
+#     - converge
+#     - lint
+#     - side_effect
+#     - verify
+#     - destroy
+
 scenario:
   name: default
-  test_sequence:
+  create_sequence:
+    - create
+    - prepare
+  check_sequence:
     - destroy
+    - create
+    - prepare
+    - converge
+    - check
+    - destroy
+  converge_sequence:
+    - create
+    - prepare
+    - converge
+  destroy_sequence:
+    - destroy
+  test_sequence:
+    - lint
+    - destroy
+    - dependency
     - syntax
     - create
     - prepare
     - converge
-    - lint
     - side_effect
     - verify
     - destroy
-
-
-
