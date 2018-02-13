@@ -1,4 +1,4 @@
-{% import 'templates/import/boss__tpl_macros.j2' as boss__tpl_macros with context %}
+{% import 'templates/import/boss__apt__tpl_macros.j2' as boss__apt__tpl_macros with context %}
 #!/usr/bin/env python
 
 # {{ ansible_managed }}
@@ -7,10 +7,10 @@
 {% set boss__apt__tpl_default_sources_map = {} %}
 {% set boss__apt__tpl_source_distributions = {} %}
 {% for repo in boss__apt__security_sources %}
-{%   set _ = boss__apt__tpl_security_sources.extend(boss__tpl_macros.flattened(repo.uri, repo.uris) | from_json) %}
+{%   set _ = boss__apt__tpl_security_sources.extend(boss__apt__tpl_macros.flattened(repo.uri, repo.uris) | from_json) %}
 {% endfor %}
 {% for repo in boss__apt__default_sources %}
-{%   set repo_uris = (boss__tpl_macros.flattened(repo.uri, repo.uris) | from_json) %}
+{%   set repo_uris = (boss__apt__tpl_macros.flattened(repo.uri, repo.uris) | from_json) %}
 {%   if repo.distribution|d() == boss__apt__distribution %}
 {%     set _ = boss__apt__tpl_default_sources.extend(repo_uris) %}
 {%   endif %}

@@ -1,7 +1,7 @@
 {# vim: foldmarker=[[[,]]]:foldmethod=marker
 # Commonly used set of macros in DebOps.
 # It can be included in repositories as needed.
-# Changes to this file should go upstream: https://github.com/boss/boss-playbooks/blob/master/templates/boss__tpl_macros.j2
+# Changes to this file should go upstream: https://github.com/boss/boss-playbooks/blob/master/templates/boss__apt__tpl_macros.j2
 #
 # Copyright [[[
 # =============
@@ -29,7 +29,7 @@
 # Usage [[[
 # =========
 #
-# Copy the template file to `./templates/import/boss__tpl_macros.j2` of your
+# Copy the template file to `./templates/import/boss__apt__tpl_macros.j2` of your
 # role and import it from there into various other templates or even use it
 # in {{ lookup("template", ...) }}.
 #
@@ -38,11 +38,11 @@
 #
 # To use the macros in your own template, this file needs to be included like so:
 #
-# {% import 'templates/import/boss__tpl_macros.j2' as boss__tpl_macros with context %}
+# {% import 'templates/import/boss__apt__tpl_macros.j2' as boss__apt__tpl_macros with context %}
 #
 # Then you can start using the macros like this:
 #
-# {{ boss__tpl_macros.indent(some_content, 4) }}
+# {{ boss__apt__tpl_macros.indent(some_content, 4) }}
 #
 # ]]] #}
 
@@ -100,7 +100,7 @@
 {% macro indent(content, width=4, indentfirst=False) %}{# [[[ #}
 {# Fixed version of the `indent` filter which does not insert trailing spaces on empty lines.
 ## Note that you can not use this macro like a filter but have to use it like a regular macro.
-## Example: {{ boss__tpl_macros.indent(some_content, 4) }}
+## Example: {{ boss__apt__tpl_macros.indent(some_content, 4) }}
 ##
 ## Python re.sub seems to default to re.MULTILINE in Ansible.
 #}
@@ -141,13 +141,13 @@
 ## Ref: https://stackoverflow.com/questions/13944751/args-kwargs-in-jinja2-macros
 ## Usage:
 ##
-## {{ boss__tpl_macros.flattened(['list1', 55, ["deeplist1", "deeplist elem", True, False, undefined], {'mapping': True}], 'raw1', 22, True, False) }}
+## {{ boss__apt__tpl_macros.flattened(['list1', 55, ["deeplist1", "deeplist elem", True, False, undefined], {'mapping': True}], 'raw1', 22, True, False) }}
 ## → ["list1", 55, "deeplist1", "deeplist elem", true, false, "raw1", 22, true, false]
 ##
-## {{ boss__tpl_macros.flattened(['list1', 55, ["deeplist1", "deeplist elem", True, False, undefined], {'mapping': True}], 'raw1', 22, True, False, filter_undef=False) }}
+## {{ boss__apt__tpl_macros.flattened(['list1', 55, ["deeplist1", "deeplist elem", True, False, undefined], {'mapping': True}], 'raw1', 22, True, False, filter_undef=False) }}
 ## → ["list1", 55, "deeplist1", "deeplist elem", true, false, null, "raw1", 22, true, false]
 ##
-## {{ boss__tpl_macros.flattened(['list1', 55, ["deeplist1", "deeplist elem", True, False, undefined], {'mapping': True}], 'raw1', 22, True, False, filter_mapping=False) }}
+## {{ boss__apt__tpl_macros.flattened(['list1', 55, ["deeplist1", "deeplist elem", True, False, undefined], {'mapping': True}], 'raw1', 22, True, False, filter_mapping=False) }}
 ## → ["list1", 55, "deeplist1", "deeplist elem", true, false, {"mapping": true}, "raw1", 22, true, false]
 ##
 ## Ansible versions tested with: 2.1, 2.2
