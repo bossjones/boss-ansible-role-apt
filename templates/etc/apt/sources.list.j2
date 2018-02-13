@@ -1,12 +1,12 @@
 # {{ ansible_managed }}
-{% import 'templates/import/boss__tpl_macros.j2' as boss__tpl_macros with context %}
+{% import 'templates/import/boss__apt__tpl_macros.j2' as boss__apt__tpl_macros with context %}
 {% macro print_entry(input_entry) %}
 {%   set entry = {} %}
 {%   for key, value in input_entry.iteritems() %}
 {%     if key in [ 'state' ] %}
 {%       set _ = entry.update({ key: value | unique }) %}
 {%     else %}
-{%       set _ = entry.update({ key: boss__tpl_macros.flattened(value) | from_json | unique }) %}
+{%       set _ = entry.update({ key: boss__apt__tpl_macros.flattened(value) | from_json | unique }) %}
 {%     endif %}
 {%   endfor %}
 {%   set entry_disabled = '# ' if (entry.state == 'disabled') else '' %}
@@ -19,9 +19,9 @@
 {%     endfor %}
 {%   else %}
 {%     for entry_uri in entry.uris %}
-{%       set boss__tpl_seen_suites = boss__tpl_seen_sources[entry_uri]|d([]) %}
+{%       set boss__apt__tpl_seen_suites = boss__apt__tpl_seen_sources[entry_uri]|d([]) %}
 {%       for entry_suite in entry.suites %}
-{%         if entry.state == 'disabled' or (entry_uri in boss__tpl_seen_sources.keys() and entry_suite in boss__tpl_seen_sources[entry_uri] and boss__sources_filter_duplicates|bool) %}
+{%         if entry.state == 'disabled' or (entry_uri in boss__apt__tpl_seen_sources.keys() and entry_suite in boss__apt__tpl_seen_sources[entry_uri] and boss__apt__sources_filter_duplicates|bool) %}
 {%           set entry_disabled = '# ' %}
 {%         else %}
 {%           set entry_disabled = '' %}
@@ -36,20 +36,20 @@
 {%         if entry.types | count > 1 and not loop.last %}
 
 {%         endif %}
-{%         set _ = boss__tpl_seen_suites.append(entry_suite) %}
+{%         set _ = boss__apt__tpl_seen_suites.append(entry_suite) %}
 {%       endfor %}
-{%       set _ = boss__tpl_seen_sources.update({entry_uri: boss__tpl_seen_suites}) %}
+{%       set _ = boss__apt__tpl_seen_sources.update({entry_uri: boss__apt__tpl_seen_suites}) %}
 {%     endfor %}
 {%   endif %}
 {% endmacro %}
-{% set boss__tpl_seen_sources = {} %}
-{% set boss__tpl_suites = [] %}
-{% for boss__tpl_suffix in boss__tpl_macros.flattened(boss__distribution_suffixes) | from_json %}
-{%   set _ = boss__tpl_suites.append(boss__distribution_release + boss__tpl_suffix) %}
+{% set boss__apt__tpl_seen_sources = {} %}
+{% set boss__apt__tpl_suites = [] %}
+{% for boss__apt__tpl_suffix in boss__apt__tpl_macros.flattened(boss__apt__distribution_suffixes) | from_json %}
+{%   set _ = boss__apt__tpl_suites.append(boss__apt__distribution_release + boss__apt__tpl_suffix) %}
 {% endfor %}
-{% set boss__tpl_sources = [] %}
-{% for element in boss__combined_sources %}
-{%   set boss__tpl_source = {
+{% set boss__apt__tpl_sources = [] %}
+{% for element in boss__apt__combined_sources %}
+{%   set boss__apt__tpl_source = {
   "types": [],
   "options": [],
   "uris": [],
@@ -57,51 +57,51 @@
   "components": [],
   "comments": [],
   "state": "present",
-  "architecture": boss__architecture,
-  "distribution": boss__distribution,
-  "distribution_release": boss__distribution_release
+  "architecture": boss__apt__architecture,
+  "distribution": boss__apt__distribution,
+  "distribution_release": boss__apt__distribution_release
 } %}
 {%   if element is string %}
-{%     set _ = boss__tpl_source.update({ "uris": [ element ]}) %}
+{%     set _ = boss__apt__tpl_source.update({ "uris": [ element ]}) %}
 {%   elif element is mapping %}
-{%     set _ = boss__tpl_source.update({
-         "types": boss__tpl_macros.flattened(element.type, element.types) | from_json,
-         "options": boss__tpl_macros.flattened(element.option, element.options) | from_json,
-         "uris": boss__tpl_macros.flattened(element.uri, element.uris) | from_json,
-         "suites": boss__tpl_macros.flattened(element.suite, element.suites) | from_json,
-         "components": boss__tpl_macros.flattened(element.component, element.components) | from_json,
-         "comments": boss__tpl_macros.flattened(element.comment, element.comments) | from_json,
-         "state": element.state|d(boss__tpl_source.state),
-         "architecture": element.architecture|d(boss__tpl_source.architecture),
-         "distribution": element.distribution|d(boss__tpl_source.distribution),
-         "distribution_release": element.distribution_release|d(boss__tpl_source.distribution_release),
+{%     set _ = boss__apt__tpl_source.update({
+         "types": boss__apt__tpl_macros.flattened(element.type, element.types) | from_json,
+         "options": boss__apt__tpl_macros.flattened(element.option, element.options) | from_json,
+         "uris": boss__apt__tpl_macros.flattened(element.uri, element.uris) | from_json,
+         "suites": boss__apt__tpl_macros.flattened(element.suite, element.suites) | from_json,
+         "components": boss__apt__tpl_macros.flattened(element.component, element.components) | from_json,
+         "comments": boss__apt__tpl_macros.flattened(element.comment, element.comments) | from_json,
+         "state": element.state|d(boss__apt__tpl_source.state),
+         "architecture": element.architecture|d(boss__apt__tpl_source.architecture),
+         "distribution": element.distribution|d(boss__apt__tpl_source.distribution),
+         "distribution_release": element.distribution_release|d(boss__apt__tpl_source.distribution_release),
       }) %}
 {%     if "repo" in element %}
-{%       set _ = boss__tpl_source.update({ "repo": element.repo }) %}
+{%       set _ = boss__apt__tpl_source.update({ "repo": element.repo }) %}
 {%     endif %}
 {%   else %}
-{%     set _ = boss__tpl_source.update({ "uris": element }) %}
+{%     set _ = boss__apt__tpl_source.update({ "uris": element }) %}
 {%   endif %}
-{%   if not boss__tpl_source.types %}
-{%     set _ = boss__tpl_source.types.extend(boss__tpl_macros.flattened(boss__source_types) | from_json) %}
+{%   if not boss__apt__tpl_source.types %}
+{%     set _ = boss__apt__tpl_source.types.extend(boss__apt__tpl_macros.flattened(boss__apt__source_types) | from_json) %}
 {%   endif %}
-{%   if not boss__tpl_source.uris %}
+{%   if not boss__apt__tpl_source.uris %}
 {%     if element is mapping %}
-{%       if boss__distribution in element.keys() %}
-{%         set _ = boss__tpl_source.uris.extend(boss__tpl_macros.flattened(element[boss__distribution]) | from_json) %}
+{%       if boss__apt__distribution in element.keys() %}
+{%         set _ = boss__apt__tpl_source.uris.extend(boss__apt__tpl_macros.flattened(element[boss__apt__distribution]) | from_json) %}
 {%       endif %}
 {%     endif %}
 {%   endif %}
-{%   if not boss__tpl_source.suites %}
-{%     set _ = boss__tpl_source.suites.extend(boss__tpl_suites) %}
+{%   if not boss__apt__tpl_source.suites %}
+{%     set _ = boss__apt__tpl_source.suites.extend(boss__apt__tpl_suites) %}
 {%   endif %}
-{%   if not boss__tpl_source.components %}
-{%     set _ = boss__tpl_source.components.extend(boss__tpl_macros.flattened(boss__distribution_components) | from_json) %}
+{%   if not boss__apt__tpl_source.components %}
+{%     set _ = boss__apt__tpl_source.components.extend(boss__apt__tpl_macros.flattened(boss__apt__distribution_components) | from_json) %}
 {%   endif %}
-{%   set _ = boss__tpl_sources.append(boss__tpl_source) %}
+{%   set _ = boss__apt__tpl_sources.append(boss__apt__tpl_source) %}
 {% endfor %}
-{% for entry in boss__tpl_sources %}
-{%   if (entry.state in [ "present", "disabled" ] and entry.architecture == boss__architecture and entry.distribution == boss__distribution and entry.distribution_release == boss__distribution_release) %}
+{% for entry in boss__apt__tpl_sources %}
+{%   if (entry.state in [ "present", "disabled" ] and entry.architecture == boss__apt__architecture and entry.distribution == boss__apt__distribution and entry.distribution_release == boss__apt__distribution_release) %}
 {%     if loop.first and not entry.comments %}
 
 {%     endif %}
