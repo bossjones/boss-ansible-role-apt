@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: boss-ansible-role-fake
+      bossjones__user: root
+      bossjones__group: root
+
+
