@@ -205,7 +205,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision :shell, inline: $docker_script
 
   # shared folder setup
-  config.vm.synced_folder ".", "/home/vagrant/boss-ansible-role-fake"
+  config.vm.synced_folder ".", "/home/vagrant/boss-ansible-role-apt"
 
   # copy private key so hosts can ssh using key authentication (the script below sets permissions to 600)
   config.vm.provision :file do |file|
